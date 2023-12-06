@@ -6,8 +6,14 @@ version = "0.0.1"
 requires-python = ">=3.10"
 dependencies = [
     "pyyaml",
-    "click"
+    "click",
+    "pandas",
+    "numpy",
+
 ]
+
+[project.scripts]
+pfm = "app:main"
 
 [project.optional-dependencies]
 dev = [
