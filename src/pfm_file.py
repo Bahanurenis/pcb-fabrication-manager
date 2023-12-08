@@ -1,62 +1,61 @@
+import sys
 from pathlib import Path
+from enum import Enum
 import yaml
 import pandas as pd
 
 
-class PfmFile:
-    def __init__(self):
-        pass
+class FileTypeEnum(Enum):
+    YAML = ("yaml",)
+    CSV = ("csv",)
+    UNKNOWN = ("UNKNOWN",)
 
-    def is_file_valid(self, path: Path, suffixs: dict):
+
+class PfmFile:
+    sys.tracebacklimit = 0
+
+    def __init__(self, path: Path):
+        self._path: Path = path
+        self._file_type: FileTypeEnum = self._set_file_type(self._path)
+        self._is_valid: bool = self._validate(self._path, self._file_type)
+
+    def _set_file_type(self, path: Path):
+        _type = FileTypeEnum
+        if path.suffix in [".yaml", ".yml"]:
+            return _type.YAML
+        elif path.suffix == ".csv":
+            return _type.CSV
+        else:
+            return _type.UNKNOWN
+
+    def _validate(self, path: Path, file_type):
         if path.is_file() is not True:
-            raise Exception(f"{path} is not file")
+            raise FileNotFoundError(f"{path} is not file")
             return False
-        elif path.suffix not in suffixs:
-            raise Exception(f"config file's suffix should  be one of {suffixs}")
+        if file_type == FileTypeEnum.UNKNOWN:
+            raise Exception(
+                f" file is not recognized, please be ensure give the correct file type"
+            )
             return False
         else:
             return True
 
-
-class PfmYaml(PfmFile):
-    def __init__(self):
-        super().__init__()
-        self._yaml: dict = []
+    @property
+    def file_path(self):
+        if self._is_valid:
+            return self._path
 
     @property
-    def yaml(self) -> dict:
-        return self._yaml
+    def file_type(self):
+        if self._is_valid:
+            return self._file_type
 
-    @yaml.setter
-    def yaml(self, value: Path):
-        _p: Path = value
-        if super().is_file_valid(_p, [".yaml", ".yml"]) is not True:
-            self._yaml = None
-        else:
-            with open(_p, "r") as file:
-                self._yaml = yaml.safe_load(file)
+
+class PfmYaml(PfmFile):
+    def __init__(self, path: Path):
+        super().__init__(path=path)
 
 
 class PfmCsv(PfmFile):
-    def __init__(self):
-        super().__init__()
-        self._csv: pd.DataFrame = None
-
-    @property
-    def csv(self) -> pd.DataFrame:
-        return self._csv
-
-    @csv.setter
-    def csv(self, value):
-        _p: Path = value
-        if (
-            super().is_file_valid(
-                _p,
-                [".csv"],
-            )
-            is not True
-        ):
-            self._csv = None
-        else:
-            with open(_p, "r") as file:
-                self._csv = pd.read_csv(file, on_bad_lines="warn")
+    def __init__(self, path: Path):
+        super().__init__(path=path)
