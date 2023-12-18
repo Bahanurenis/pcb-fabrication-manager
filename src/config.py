@@ -3,13 +3,16 @@ import sys
 
 
 class Config:
-    def __init__(self, config_file: dict):
+    def __init__(self, config: dict):
         self._config: dict = {}
         self._headers_list: List[Header] = []
-        if self.validate(config_file):
-            self._headers_list = self.set_headers_list(config_file["headers"])
+        self._row_list: List[dict] = []
+        if self.validate(config):
+            self._headers_list = self.set_headers_list(config["headers"])
             if self._headers_list != []:
                 self._config = config_file
+                if config["rows"] is not None:
+                    self._row_list = config["rows"]
 
     def validate(self, config_file: dict):
         if "headers" not in config_file.keys():
@@ -44,8 +47,11 @@ class Config:
 
     @property
     def headers(self):
-        if self._headers_list != []:
-            return self._headers_list
+        return self._headers_list
+
+    @property
+    def rows(self):
+        return self._row_list
 
 
 class Header:

@@ -11,17 +11,17 @@ from pfm_file import PfmYaml, PfmCsv
 from config import Config
 
 
-def map_yaml_to_csv(config: Config, csv_columns: pd.Index.values):
-    _new_columns: dict = {}
-    for header in config.headers:
-        if header.name not in csv_columns and header.required == True:
-            raise Exception(
-                f"{header.name} is required ,but it couldn't find in the csv columns"
-            )
-            break
-        else:
-            _new_columns[header.name] = header.mapping_name
-    return _new_columns
+# def map_yaml_to_csv(config: Config, csv_columns: pd.Index.values):
+#     _new_columns: dict = {}
+#     for header in config.headers:
+#         if header.name not in csv_columns and header.required == True:
+#             raise Exception(
+#                 f"{header.name} is required ,but it couldn't find in the csv columns"
+#             )
+#             break
+#         else:
+#             _new_columns[header.name] = header.mapping_name
+#     return _new_columns
 
 
 # TODO: we will use this logic later
@@ -98,8 +98,8 @@ def main(config: Path, inputfile: Path, outputfile: Path):
     input_csv = PfmCsv(inputfile)
 
     _config = PfmYamlParser(config_path).config
-    _csv_handler = PfmCsvHandler(input_csv)
-    _new_map = map_yaml_to_csv(_config, _csv_handler.get_columns())
+    _csv_handler = PfmCsvHandler(input_csv, config=_config)
+    # _new_map = map_yaml_to_csv(_config, _csv_handler.get_columns())
     _csv_handler.update_csv_data(_new_map)
     if outputfile.parent.exists() == False:
         click.echo(
