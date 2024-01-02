@@ -1,0 +1,27 @@
+headers:
+  -
+    name: "Designator"
+    required:
+    mapping-name: ""
+
+  -
+    name : "Layer"
+    required: True
+  -
+    name: "Center-X(mm)"
+    required: True
+    mapping-name: "Mid X"
+
+  -
+    name: "Center-Y(mm)"
+    required: True
+    mapping-name: "Mid Y"
+
+  -
+    name: "Rotation"
+    required: True
+    mapping-name: "Rotation"
+
+rows:
+ - TopLayer: "T"
+ - BottomLayer: "B"
