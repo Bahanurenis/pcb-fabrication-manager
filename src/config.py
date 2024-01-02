@@ -4,29 +4,28 @@ import sys
 
 class Config:
     def __init__(self, config: dict):
-        self._config: dict = {}
         self._headers_list: List[Header] = []
         self._row_list: List[dict] = []
         if self.validate(config):
             self._headers_list = self.set_headers_list(config["headers"])
             if self._headers_list != []:
-                self._config = config_file
                 if config["rows"] is not None:
                     self._row_list = config["rows"]
+                self._config = config
 
-    def validate(self, config_file: dict):
-        if "headers" not in config_file.keys():
+    def validate(self, config: dict):
+        if "headers" not in config.keys():
             raise Exception(
                 "config file should have 'headers' field, please check the documentation "
             )
             return False
         else:
-            if config_file["headers"] == []:
+            if config["headers"] == []:
                 raise Exception(
                     "config file 'headers' shouldn't be empty, please check the documentation "
                 )
-            elif type(config_file["headers"]) != list:
-                headers_value_type = type(config_file["headers"])
+            elif type(config["headers"]) != list:
+                headers_value_type = type(config["headers"])
                 raise Exception(
                     f" config file 'headers' should have list of parameters, but given config's header values type is {headers_value_type}, please check the documentation"
                 )

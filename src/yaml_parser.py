@@ -18,18 +18,9 @@ class PfmYamlParser:
             with open(pfm_yaml.file_path, "r") as file:
                 # print(yaml.safe_load(file))
                 _config: Config = Config(yaml.safe_load(file))
-                print(_config.headers)
         return _config
 
     @property
     def config(self):
         if self._config != None:
             return self._config
-
-
-if __name__ == "__main__":
-    print("hello")
-    p = Path().cwd() / "config.yaml"
-    fi = PfmYaml(p)
-    yp = PfmYamlParser(fi)
-    # print(yp.config.headers)
