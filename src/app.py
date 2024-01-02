@@ -97,10 +97,8 @@ def main(config: Path, inputfile: Path, outputfile: Path):
 
     input_csv = PfmCsv(inputfile)
 
-    _config = PfmYamlParser(config_path).config
-    _csv_handler = PfmCsvHandler(input_csv, config=_config)
-    # _new_map = map_yaml_to_csv(_config, _csv_handler.get_columns())
-    _csv_handler.update_csv_data(_new_map)
+    _config = PfmYamlParser(pfm_yaml=config_path).config
+    _csv_handler = PfmCsvHandler(csv_file=input_csv, config=_config)
     if outputfile.parent.exists() == False:
         click.echo(
             click.style(
@@ -111,7 +109,7 @@ def main(config: Path, inputfile: Path, outputfile: Path):
         outputfile.parent.mkdir(parents=True, exist_ok=True)
 
     click.echo(click.style("Progress...", fg="green"))
-    _csv_handler.save_csv_data(output_csv_path=outputfile)
+    _csv_handler.export_new_csv_data(output_csv_path=outputfile)
     click.echo(click.style("new csv file has been saved...", fg="green"))
 
 
