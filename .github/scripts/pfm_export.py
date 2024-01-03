@@ -2,7 +2,6 @@ import os
 from string import Template
 import requests
 from dotenv import load_dotenv, dotenv_values
-from src.yaml_parser import PfmYamlParser
 
 token = dotenv_values(".env").get("github_token")
 headers = {"Authorization": f"Bearer {token}"}
@@ -23,44 +22,22 @@ def _run_query(query: str, variables: dict = {}) -> dict:
         )
 
 
-def _find_issue():
-    query = """
-    query($owner:String!, $name:String!){
-        repository(owner:$owner, name:$name){
-            issues(first:10, labels:"pfm"){
-                nodes{
-                    id
-                    body
-                }
-            }
-        }
-    }
-    """
-    variables = {
-        "owner": "Bahanurenis",
-        "name": "pcb-fabrication-manager",
-    }
-    response = _run_query(query=query, variables=variables)
-    print(response)
-    return response
-
-
-def _delete_issue():
+def _delete_issue(issueId: str):
     mutation = """
-    mutation DeleteIssue{
-        deleteIssue(input:{issueId:"I_kwDOK18lRc57AJT6"}) {
+    mutation DeleteIssue($id:ID!){
+        deleteIssue(input:{issueId:$id}) {
             repository {
                 name
             }
         }
     }
     """
-    variables = {"": ""}
+    variables = {"id": issueId}
     response = _run_query(query=mutation, variables=variables)
     print(response)
     return response
 
 
 if __name__ == "__main__":
-    _find_issue()
-    # _delete_issue()
+    # _find_issue()
+    _delete_issue("I_kwDOK18lRc57CSmc")

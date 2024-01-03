@@ -12,6 +12,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  issue:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{steps.labels.outputs.name}}
+    steps:
+      - id: labels
+        run:  echo "name=${{github.event.issue.labels.name}}" >> "$GITHUB_OUTPUT"
   pfm-issue-handler:
     runs-on: ubuntu-latest
     # The type of runner that the job will run on
@@ -20,6 +27,7 @@ jobs:
       - name: Get Issue ID
         run: |
           echo "${{github.event.issue.node_id}}"
+
 
       # - uses: octokit/graphql-action@v2.x
       #   id: issue_id
