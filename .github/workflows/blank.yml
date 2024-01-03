@@ -12,14 +12,17 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  pfm-issue-handler:
+  pfm-issue:
+    if: github.event.issue.labels.name == 'pfm'
     runs-on: ubuntu-latest
     # The type of runner that the job will run on
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Get Issue ID
-        run: |
-          echo "${{github.event.issue.node_id}}"
+      # - name: Pfm Export CSV
+      #   id: pfm_csv
+      #   run: |
+      #     echo "${{github.event.issue.node_id}}"
+
 
       # - uses: octokit/graphql-action@v2.x
       #   id: issue_id
@@ -42,13 +45,32 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - run: "echo 'issue: ${{steps.issue_id.outputs.data}}'"
 
+      - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install .
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Run Pfm Export
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          PFM_TOKEN=${{secrets.PFM_AUTH}} ISSUE_ID=${{github.event.issue.node_id}} ISSUE_BODY=${{github.event.issue.body}} python3 .github/scripts/pfm_export.py
+  # delete-issue:
+  # if: always()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: octokit/graphql-action@v2.x
+  #       id: issue_id
+  #       with:
+  #         mutation: |
+  #           mutation DeleteIssue($id:ID!){
+  #             deleteIssue(input:{issueId:$id}) {
+  #                 repository {
+  #                     name
+  #                 }
+  #             }
+  #           }
+  #         variables: |
+  #           id:${{github.event.issue.node_id}}

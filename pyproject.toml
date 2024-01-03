@@ -9,7 +9,7 @@ dependencies = [
     "click",
     "pandas",
     "numpy",
-
+    "requests"
 ]
 
 [project.scripts]
@@ -18,5 +18,6 @@ pfm = "app:main"
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "black"
+    "black",
+    "python-dotenv"
 ]
