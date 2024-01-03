@@ -1,0 +1,54 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  issues:
+    types:
+      - opened
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  pfm-issue-handler:
+    runs-on: ubuntu-latest
+    # The type of runner that the job will run on
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Get Issue ID
+        run: |
+          echo "${{github.event.issue.node_id}}"
+
+      # - uses: octokit/graphql-action@v2.x
+      #   id: issue_id
+      #   with:
+      #     query: |
+      #       query findIssue ($owner:String!, $name:String!) {
+      #         repository(owner:$owner, name:$name){
+      #           issues(last:1, labels:[pfm]){
+      #             nodes{
+      #                 id
+      #                 body
+      #               }
+      #             }
+      #           }
+      #       }
+      #     variables: |
+      #       owner: ${{ github.event.repository.owner.login }}
+      #       name: ${{ github.event.repository.name }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - run: "echo 'issue: ${{steps.issue_id.outputs.data}}'"
+
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
