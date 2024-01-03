@@ -6,6 +6,9 @@ from dotenv import load_dotenv, dotenv_values
 token = dotenv_values(".env").get("github_token")
 headers = {"Authorization": f"Bearer {token}"}
 GITHUB_URL = "https://api.github.com/graphql"
+pfm_token = os.environ["PFM_TOKEN"]
+issue_id = os.environ["ISSUE_ID"]
+issue_body = os.environ["ISSUE_BODY"]
 
 
 def _run_query(query: str, variables: dict = {}) -> dict:
@@ -20,6 +23,28 @@ def _run_query(query: str, variables: dict = {}) -> dict:
         raise Exception(
             f"Query failed to run by returning code of {response.status_code}, {query}"
         )
+
+
+def _find_issue():
+    query = """
+    query($owner:String!, $name:String!){
+        repository(owner:$owner, name:$name){
+            issues(first:10, labels:"pfm"){
+                nodes{
+                    id
+                    body
+                }
+            }
+        }
+    }
+    """
+    variables = {
+        "owner": "Bahanurenis",
+        "name": "pcb-fabrication-manager",
+    }
+    response = _run_query(query=query, variables=variables)
+    print(response)
+    return response
 
 
 def _delete_issue(issueId: str):
@@ -39,5 +64,7 @@ def _delete_issue(issueId: str):
 
 
 if __name__ == "__main__":
-    # _find_issue()
-    _delete_issue("I_kwDOK18lRc57CSmc")
+    print(issue_id)
+    print(issue_body)
+    _find_issue()
+    # _delete_issue("I_kwDOK18lRc57CSmc")
