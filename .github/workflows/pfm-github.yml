@@ -1,0 +1,46 @@
+name: PFM GitHub
+on:
+  issues:
+    types:
+      - opened
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  pfm-issue:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - run: pip install .
+
+      - name: Run Pfm With GH
+        run: python3 .github/scripts/pfm_gh_build_csv.py
+        env:
+          PFM_AUTH: ${{secrets.PFM_TOKEN}}
+          ISSUE: ${{toJson(github.event.issue)}}
+          WORKSPACE_PATH: ${{github.workspace}}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{github.event.issue.user.login}}-output
+          path: ${{ github.workspace }}/${{github.event.issue.node_id}}_output.csv
+          compression-level: 9
+          retention-days: 1
+      - run: echo "ATTENTION your artifact will be deleted after 1 day."
+      - name: Delete dir from workspace
+        run: |
+          rm ${{ github.workspace }}/${{github.event.issue.node_id}}_output.csv
+          echo "output.csv is deleted"
+          ls ${{ github.workspace }}

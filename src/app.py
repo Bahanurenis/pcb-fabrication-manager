@@ -98,7 +98,7 @@ def main(config: Path, inputfile: Path, outputfile: Path):
     input_csv = PfmCsv(inputfile)
 
     _config = PfmYamlParser(pfm_yaml=config_path).config
-    _csv_handler = PfmCsvHandler(csv_file=input_csv, config=_config)
+    _csv_handler = PfmCsvHandler.from_PfmCsvFile(config=_config, csv_file=input_csv)
     if outputfile.parent.exists() == False:
         click.echo(
             click.style(

@@ -5,15 +5,22 @@ from config import Config
 
 
 class PfmCsvHandler:
-    def __init__(self, csv_file: PfmCsv, config: Config):
-        self._df: pd.DataFrame
+    def __init__(self, config: Config, dataFrame: pd.DataFrame):
+        if dataFrame.empty:
+            raise AttributeError(f"data is not correct")
+        self._df: pd.DataFrame = dataFrame
         self._config: Config = config
+
+    # For the PFM command line app
+    @classmethod
+    def from_PfmCsvFile(cls, config: Config, csv_file: PfmCsv):
         if csv_file.file_type != FileTypeEnum.CSV:
             raise TypeError(
                 f" file extension should be '.csv', given file extension was {input_csv.file_type.value}"
             )
         with open(csv_file.file_path, "r") as file:
-            self._df = pd.read_csv(file, on_bad_lines="warn")
+            _df: pd.DataFrame = pd.read_csv(file, on_bad_lines="warn")
+            return cls(config=config, dataFrame=_df)
 
     def _update_columns(self):
         _csv_columns: pd.Index.values = self._df.columns.values
