@@ -18,6 +18,5 @@ pfm = "app:main"
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "black",
     "python-dotenv"
 ]
